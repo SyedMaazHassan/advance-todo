@@ -1,146 +1,191 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
 {% block title %} Todo {% endblock %}
 
 {% block stylesheets %}
-
-<!-- Specific CSS goes HERE -->
-
+<link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
 {% endblock stylesheets %}
 
 {% block content %}
 
-    <!-- [ Main Content ] start -->
-    <section class="pcoded-main-container">
-        <div class="pcoded-wrapper">
-            <div class="pcoded-content">
-                <div class="pcoded-inner-content">
 
-                    <div class="main-body">
-                        <div class="page-wrapper">
-                            <!-- [ Main Content ] start -->
 
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="table-responsive">
-                                            <table class="table" style="width:100%">
-                                                {% for item in weather_data %}
-                                                    <th style="text-align:center">
-                                                    <h6 class="mb-1">{{ item.0|date:"H:i" }}</h6>
-                                                    <img class="rounded-circle" style="width:90px;height:90px" src={{ item.3 }} alt="weather-icon">
-                                                    <h6 class="mb-1">{{ item.1 }}度、{{ item.2 }}</h6>
-                                                    </th>
-                                                {% endfor %}
-                                            </table>
-                                        </div>
+
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+
+                        <div class="row">
+
+                            <div class="col-xl-12">
+                                <div class="card">
+                                    <div class="table-responsive">
+                                        <table class="table" style="width:100%">
+                                            {% for item in weather_data %}
+                                            <th style="text-align:center">
+                                                <h6 class="mb-1">{{ item.0|date:"H:i" }}</h6>
+                                                <img class="rounded-circle" style="width:90px;height:90px" src={{ item.3
+                                                    }} alt="weather-icon">
+                                                <h6 class="mb-1">{{ item.1 }}度、{{ item.2 }}</h6>
+                                            </th>
+                                            {% endfor %}
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <!-- [ Todo ] start -->
 
-                                <div class="col-xl-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5><b>To Do List</b></h5>
-                                        </div>
-                                        <div class="card-block">
-                                            <div class="input-group mb-3">
-                                                <input type="text" name="task-insert" class="form-control add_task_todo" placeholder="Create your task list" required="">
-                                                    <div class="input-group-append">
-                                                        <button class="btn btn-secondary btn-icon" id="add-btn">
-                                                            <i class="fa fa-plus"></i>
-                                                        </button>
-                                                    </div>
-                                            </div>
-                                            <div class="new-task">
-                                                <div class="to-do-list mb-3">
-                                                    <div class="d-inline-block">
-                                                        <label class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                                            <span class="custom-control-label">Lorem Ipsum Dolor Sit Amet</span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="float-right"><a onclick="delete_todo(1);" href="#!" class="delete_todolist"><i class="far fa-trash-alt"></i></a></div>
-                                                </div>
-                                                <div class="to-do-list mb-3">
-                                                    <div class="d-inline-block">
-                                                        <label class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                                            <span class="custom-control-label">Industry's standard dummy text ever since the 1500s</span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="float-right"><a onclick="delete_todo(2);" href="#!" class="delete_todolist"><i class="far fa-trash-alt"></i></a></div>
-                                                </div>
-                                                <div class="to-do-list mb-3">
-                                                    <div class="d-inline-block">
-                                                        <label class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck3">
-                                                            <span class="custom-control-label">The point of using Lorem Ipsum is that it has a more-or-less </span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="float-right"><a onclick="delete_todo(3);" href="#!" class="delete_todolist"><i class="far fa-trash-alt"></i></a></div>
-                                                </div>
-                                                <div class="to-do-list mb-3">
-                                                    <div class="d-inline-block">
-                                                        <label class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck4">
-                                                            <span class="custom-control-label">Contrary to popular belief</span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="float-right"><a onclick="delete_todo(4);" href="#!" class="delete_todolist"><i class="far fa-trash-alt"></i></a></div>
-                                                </div>
-                                                <div class="to-do-list mb-3">
-                                                    <div class="d-inline-block">
-                                                        <label class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck5">
-                                                            <span class="custom-control-label">There are many variations of passages of Lorem Ipsum</span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="float-right"><a onclick="delete_todo(5);" href="#!" class="delete_todolist"><i class="far fa-trash-alt"></i></a></div>
-                                                </div>
-                                                <div class="to-do-list mb-3">
-                                                    <div class="d-inline-block">
-                                                        <label class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck6">
-                                                            <span class="custom-control-label">Sed ut perspiciatis unde omnis iste natus</span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="float-right"><a onclick="delete_todo(6);" href="#!" class="delete_todolist"><i class="far fa-trash-alt"></i></a></div>
-                                                </div>
-                                                <div class="to-do-list mb-3">
-                                                    <div class="d-inline-block">
-                                                        <label class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck7">
-                                                            <span class="custom-control-label"> must explain to you how all this mistaken idea</span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="float-right"><a onclick="delete_todo(7);" href="#!" class="delete_todolist"><i class="far fa-trash-alt"></i></a></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- [ Todo ] end -->
-                            </div>
-                            <!-- [ Main Content ] end -->
                         </div>
+
+                        <div class="row">
+                            <!-- [ Todo ] start -->
+
+                            <div class="col-xl-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><b>To Do List</b></h5>
+                                    </div>
+
+                                    <div class="card-block">
+
+                                        <div class="input-group mb-3">
+                                            <form class="main-form" action="" method="POST">
+                                                {% csrf_token %}
+                                                <h6 style="font-weight: 900;">Add New Task</h6>
+                                                <div>
+                                                    <input class="to-do-input" type="text" name="parent_task"
+                                                        placeholder="Write Here">
+
+                                                    <input class="to-do-input" type="date" name="due_date"
+                                                        placeholder="Write Here">
+
+                                                    <button class="btn_sub" type="submit">
+                                                        <i style="color: #fff;" class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+
+                                                
+                                                <h6 style="font-weight: 900;" class="mt-3">Add Child Task</h6>
+                                                <div class="d-flex">
+                                                    <input class="to-do-input" type="text" name="child_text"
+                                                        placeholder="Write Here" required>
+    
+                                                    <select required name="parent_id"
+                                                        style="border: 0.05rem solid #59bbe9; border-radius: 5px;"
+                                                        class="form-select" aria-label="Default select example">
+
+                                                        {% for task in all_tasks %}
+                                                        {% if task.is_parent %}
+                                                        <option value="{{ task.id }}">{{ task.text }}</option>
+                                                        {% endif %}
+                                                        {% endfor %}
+    
+                                                    </select>
+    
+                                                    <button class="btn_sub" type="submit">
+                                                        <i style="color: #fff;" class="fa fa-plus"></i>
+                                                    </button>
+
+                                            </form>
+
+
+                                        </div>
+
+
+                                        
+
+                                      
+
+                                    </div>
+
+
+                                    <div class="new-task">
+                                        {% for task in all_tasks %}
+                                        <div
+                                            class="p-3 shadow d-flex flex-column to-do-list mb-3">
+
+                                            {% if task.is_parent %}
+
+                                            <div>
+                                                <div class="d-inline-block">
+                                                    <h4>{{ task.due_date }}</h4>
+                                                    <label
+                                                        class="check-task custom-control custom-checkbox d-flex justify-content-center">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                            id="customCheck1">
+                                                        <span class="custom-control-label">{{ task.text }}</span>
+                                                    </label>
+                                                </div>
+
+
+                                                <div class="pt-4 d-inline-block">
+                                                    <span style="padding: 0.5rem; font-size: 0.8rem; background-color: #E3DEFF;
+                                                    color: #39128B;"
+                                                        class="badge rounded-pill ">{{task.statusTranslation }}</span>
+                                                </div>
+                                            </div>
+
+                                            {% for child in task.get_child_tasks %}
+                                            <div>
+                                                <div class="d-inline-block">
+                                                    <label
+                                                        class="check-task custom-control custom-checkbox d-flex justify-content-center">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                            id="customCheck1">
+                                                        <span class="custom-control-label">{{ child.text }}</span>
+                                                    </label>
+                                                </div>
+
+
+                                                <div class="pt-4 d-inline-block">
+                                                    <span style="padding: 0.5rem; font-size: 0.8rem; background-color: #E3DEFF;
+                                                    color: #39128B;"
+                                                        class="badge rounded-pill ">{{task.statusTranslation }}</span>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                            {% endif %}
+
+
+                                        </div>
+                                        {% endfor %}
+
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        <!-- [ Todo ] end -->
                     </div>
+                    <!-- [ Main Content ] end -->
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+    </div>
+</section>
 
 
-    <!-- [ Main Content ] end -->
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
 {% block javascripts %}
 
-    <!-- todo js -->
-    <script src="/static/assets/plugins/todo/js/todo.js"></script>
+<!-- todo js -->
+<script src="/static/assets/plugins/todo/js/todo.js"></script>
 
 {% endblock javascripts %}

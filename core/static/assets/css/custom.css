@@ -1,0 +1,47 @@
+.main-form{
+    padding: 0.5rem;
+    background-color: white;
+}
+
+.to-do-input{
+    padding: 0.3rem;
+    border-radius: 5px;
+    border: 0.05rem solid #59bbe9;
+    margin-right: 0.5rem;
+    transition-property: all;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-in-out;
+}
+
+.to-do-input:focus-within{
+    border: 0.05rem solid #04a9f5;
+}
+.btn_sub{
+    background-color: #04a9f5;
+    border: none;
+    padding: 0.45rem 1rem 0.45rem 1rem;
+    border-radius: 50%;
+}
+
+.status{
+    padding: 0.5rem !important;
+}
+
+
+
+
+/* {% for child_task in task.child_task %}
+<div class="d-inline-block">
+    <label class="check-task custom-control custom-checkbox d-flex justify-content-center">
+        <input type="checkbox" class="custom-control-input" id="customCheck1">
+        <span class="custom-control-label">{{ child_task.text }}</span>
+    </label>
+</div>
+
+
+<div class="pt-4 d-inline-block">
+    <span style="padding: 0.5rem; font-size: 0.8rem; background-color: #E3DEFF;
+                                                    color: #39128B;" class="badge rounded-pill ">{{
+        child_task.statusTranslation }}</span>
+</div>
+{% endfor %} */
