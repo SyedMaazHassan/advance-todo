@@ -4,7 +4,47 @@
 {% block title %} Todo {% endblock %}
 
 {% block stylesheets %}
+
 <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/jqtree.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+    
+.jqtree-element.jqtree_common{
+  background-color: #ffffff !important;
+  border: 1px solid #dee2e6!important;
+  margin: 11px 0px;
+  border-radius: 10px;
+  padding: 10px;
+  border: solid 2px white;
+}
+
+ul.jqtree-tree li.jqtree-selected{
+  background: none;
+}
+
+.jqtree-selected{
+  background-color: #eeeeee;
+  background: none;
+}
+
+.jqtree-title.jqtree_common{
+  outline: none;
+}
+
+li ul.jqtree_common.jqtree-dnd{
+  margin-left: 30px;
+}
+
+
+ul.jqtree-tree li.jqtree-selected > .jqtree-element,
+    ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+        background-color: #eeeeee;
+        background: linear-gradient(#f7f7f7, #eeeeee);
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+</style>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -46,119 +86,210 @@
                         <div class="row">
                             <!-- [ Todo ] start -->
 
-                            <div class="col-xl-6">
+                            <div class="col-xl-8">
                                 <div class="card">
                                     <div class="card-header">
                                         <h5><b>To Do List</b></h5>
                                     </div>
 
-                                    <div class="card-block">
+                                    {% for message in messages %}
+                                        <div class="alert alert-success alert-dismissible fade show mb-1" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                    
+                                 
 
-                                        <div class="input-group mb-3">
-                                            <form class="main-form" action="" method="POST">
-                                                {% csrf_token %}
-                                                <h6 style="font-weight: 900;">Add New Task</h6>
-                                                <div>
-                                                    <input class="to-do-input" type="text" name="parent_task"
-                                                        placeholder="Write Here">
-
-                                                    <input class="to-do-input" type="date" name="due_date"
-                                                        placeholder="Write Here">
-
-                                                    <button class="btn_sub" type="submit">
-                                                        <i style="color: #fff;" class="fa fa-plus"></i>
+                                    <div class="border m-3 p-3 radius-10 google-box">
+                                        <form method="POST" action="{% url 'create-task' %}">
+                                            {% csrf_token %}
+                                            <p class="text-dark"><b>Add new task</b></p>
+                                            <div class="row px-2">
+                                                <div class="col-sm-7 px-2">
+                                                    <div class="form-group mb-0">
+                                                        <input type="text" name="parent_task" class="form-control bg-white" placeholder="Write here"  required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4 px-2">
+                                                    <div class="form-group bg-white">
+                                                      <select class="form-control bg-white" name="due_date" id="" required>
+                                                        <option value="">Select due time</option>
+                                                        <option value="today">TODAY</option>
+                                                        <option value="tomorrow">TOMORROW</option>
+                                                        <option value="week">THIS WEEK</option>
+                                                        <option value="later">LATER</option>
+                                                      </select>
+                                                    </div>
+                                                    <!-- <div class="form-group mb-0">
+                                                        <input type="date" name="due_date" id="due_date" class="form-control bg-white" required>
+                                                    </div> -->
+                                                </div>
+                                                <div class="col-sm-1 px-2">
+                                                    <button class="radius-100 p-0 m-0 border-0">
+                                                        <i class="material-icons mk-pointer bg-primary text-white p-2 radius-100">add</i>
                                                     </button>
+                                                    
+                                                </div>
+                                            </div>                                            
+                                        </form>
+                                    </div>
+
+                                  
+
+
+                                    <div class="border m-3 p-3 radius-10 google-box" style="min-height: 300px;">
+                                        <p class="text-secondary"><b>Your tasks</b></p>
+
+                                            <div id="sub-task-section" style="display: none;">
+                                                <div
+                                                    class="p-3 my-3 border radius-10" 
+                                                    style="background-color: #eeeeee;">
+                                                    <div class="row mb-3">
+                                                        <div class="col-sm-11 d-flex align-items-center">
+                                                            <h5 class="my-0" id="general-status-text"></h5>
+                                                            <i class="material-icons text-info mx-2" style="font-size: 18px;">arrow_forward_ios</i>
+                                                            <h5 class="my-0" id="short-text"></h5>
+                                                            
+                                                        </div>
+                                                        <div class="col-sm-1">
+                                                            <i class="material-icons mk-pointer" id="cancel-sub-task">cancel</i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row px-2 pb-0">
+                                                        <div class="col-sm-10 px-2 pb-0">
+                                                            <div class="form-group mb-0">
+                                                                <input type="text" id="sub-task-text" class="form-control bg-white child_task_text"  placeholder="Add child task">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-2 px-2  pb-0">
+                                                            <button type="button" class="btn btn-primary btn-block" id="sub-task-submit">Add</button>
+                                                        </div>
+                                                    </div>   
                                                 </div>
 
+                                            </div>
+
+                                            <div class="row mt-5 pt-3" id="no-task-warning" style="display: none; height: max-content;">
+                                                <div class="col-sm-12 d-flex align-items-center justify-content-center">
+                                                    <div class="alert alert-warning border mb-0" style="border-radius: 10px;" role="alert">
+                                                        No task due right now!
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="mb-4" id="today-container">
+                                                <h4><b>TODAY</b></h4>
                                                 
-                                                <h6 style="font-weight: 900;" class="mt-3">Add Child Task</h6>
-                                                <div class="d-flex">
-                                                    <input class="to-do-input" type="text" name="child_text"
-                                                        placeholder="Write Here" required>
-    
-                                                    <select required name="parent_id"
-                                                        style="border: 0.05rem solid #59bbe9; border-radius: 5px;"
-                                                        class="form-select" aria-label="Default select example">
-
-                                                        {% for task in all_tasks %}
-                                                        {% if task.is_parent %}
-                                                        <option value="{{ task.id }}">{{ task.text }}</option>
-                                                        {% endif %}
-                                                        {% endfor %}
-    
-                                                    </select>
-    
-                                                    <button class="btn_sub" type="submit">
-                                                        <i style="color: #fff;" class="fa fa-plus"></i>
-                                                    </button>
-
-                                            </form>
+                                                <div class="">
+                                                    <div id="tree-today"></div>
+                                                    
+                                                </div>
+                                            </div>
 
 
+                                            <div class="mb-4" id="tomorrow-container">
+                                                <h4><b>TOMORROW</b></h4>
+                                                
+                                                <div class="">
+                                                    <div id="tree-tomorrow"></div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="mb-4" id="week-container">
+                                                <h4><b>THIS WEEK</b></h4>
+                                                
+                                                <div class="">
+                                                    <div id="tree-week"></div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="mb-4" id="later-container">
+                                                <h4><b>LATER</b></h4>
+                                                
+                                                <div class="">
+                                                    <div id="tree-later"></div>
+                                                </div>
+                                            </div>
+                                         
                                         </div>
 
 
-                                        
 
-                                      
+                                
 
+
+                                </div>
+
+
+
+                            </div>
+
+
+                            <div class="col-xl-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><b>Progress</b></h5>
                                     </div>
 
-
-                                    <div class="new-task">
-                                        {% for task in all_tasks %}
-                                        <div
-                                            class="p-3 shadow d-flex flex-column to-do-list mb-3">
-
-                                            {% if task.is_parent %}
-
-                                            <div>
-                                                <div class="d-inline-block">
-                                                    <h4>{{ task.due_date }}</h4>
-                                                    <label
-                                                        class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            id="customCheck1">
-                                                        <span class="custom-control-label">{{ task.text }}</span>
-                                                    </label>
-                                                </div>
-
-
-                                                <div class="pt-4 d-inline-block">
-                                                    <span style="padding: 0.5rem; font-size: 0.8rem; background-color: #E3DEFF;
-                                                    color: #39128B;"
-                                                        class="badge rounded-pill ">{{task.statusTranslation }}</span>
-                                                </div>
+                                    
+                                
+                                    <div class="border m-3 p-3 mb-0 radius-10 google-box">
+                                     
+                                        <p class="text-dark"><b>Task completion rate</b></p>
+                                        {% if completion_rate %}
+                                            <h1>{{ completion_rate }}</h1>
+                                        {% else %}
+                                            <div class="alert alert-warning border mb-0" style="border-radius: 10px;" role="alert">
+                                                No task created yet!
                                             </div>
+                                        {% endif %}
+                                    </div>
 
-                                            {% for child in task.get_child_tasks %}
-                                            <div>
-                                                <div class="d-inline-block">
-                                                    <label
-                                                        class="check-task custom-control custom-checkbox d-flex justify-content-center">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            id="customCheck1">
-                                                        <span class="custom-control-label">{{ child.text }}</span>
-                                                    </label>
+                                    <div class="border m-3 mt-0 p-3 radius-10 google-box">
+                                        <p class="text-secondary mb-0"><b>Completed tasks</b></p>
+                                        
+                                        <div id="completed-task-container" style="height: 300px; overflow-y: auto;">
+                                            {% for task in completed_tasks %}
+                                                <div class="border mt-3 py-2 px-3 radius-10">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <div class="d-flex align-items-center">
+                                                                {% if task.status == 1 %}
+                                                                    <i class="material-icons mk-pointer text-success" data-task-id="{{ task.id }}">check_box</i>
+                                                                    <div class="mx-3">
+                                                                        <p class="m-0 p-0" style="font-size: 16px; text-decoration: line-through;">{{ task.get_short_text }}</p>
+                                                                    </div>                                                                        
+                                                                {% else %}
+                                                                    <i class="material-icons mk-pointer" data-task-id="{{ task.id }}">check_box_outline_blank</i>
+                                                                    <div class="mx-3">
+                                                                        <p class="m-0 p-0 my-2" style="font-size: 16px;">{{ task.text }}</p>
+                                                                    </div>
+                                                                {% endif %}
+                                                                
+                                                            </div>
+                                                        </div>
+
+                                                       
+                                                    </div>
                                                 </div>
-
-
-                                                <div class="pt-4 d-inline-block">
-                                                    <span style="padding: 0.5rem; font-size: 0.8rem; background-color: #E3DEFF;
-                                                    color: #39128B;"
-                                                        class="badge rounded-pill ">{{task.statusTranslation }}</span>
-                                                </div>
-                                            </div>
                                             {% endfor %}
 
+                                            {% if not completed_tasks %}
+                                                <div class="alert alert-warning border mb-0" style="border-radius: 10px;" role="alert">
+                                                    No task completed yet!
+                                                </div>
                                             {% endif %}
-
-
                                         </div>
-                                        {% endfor %}
 
 
                                     </div>
+
+
 
 
                                 </div>
@@ -179,6 +310,7 @@
 </section>
 
 
+
 <!-- [ Main Content ] end -->
 
 {% endblock content %}
@@ -187,5 +319,22 @@
 
 <!-- todo js -->
 <script src="/static/assets/plugins/todo/js/todo.js"></script>
+<script src="{% static 'assets/js/tree.jquery.js' %}"></script>
+
+
+
+<script>
+
+    var my_data = {{ new_version | safe }}
+    var my_parent_selected = null;
+    var TOGGLE_TASK_URL = "{% url 'toggle-task' %}";
+    var CREATE_CHILD_TASK = "{% url 'create-child-task' %}";
+    var UPDATE_PRIORITY = "{% url 'update-priority' %}";
+ 
+</script>
+
+<script src="{% static 'assets/js/task.js' %}"></script>
+
+
 
 {% endblock javascripts %}

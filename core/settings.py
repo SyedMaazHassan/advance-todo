@@ -18,7 +18,8 @@ SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 # load production server from .env
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', config('SERVER', default='127.0.0.1'), 'business-dashboard-21.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', config(
+    'SERVER', default='127.0.0.1'), 'business-dashboard-21.herokuapp.com']
 
 # Application definition
 
@@ -49,7 +50,8 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'core.urls'
 LOGIN_REDIRECT_URL = "google_auth"  # Route defined in app/urls.py
 LOGOUT_REDIRECT_URL = "home"  # Route defined in app/urls.py
-TEMPLATE_DIR = os.path.join(CORE_DIR, "core/templates")  # ROOT dir for templates
+TEMPLATE_DIR = os.path.join(
+    CORE_DIR, "core/templates")  # ROOT dir for templates
 
 TEMPLATES = [
     {
@@ -112,13 +114,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # LANGUAGE_CODE = 'ja-JP'
 LANGUAGE_CODE = 'en-US'
 
-TIME_ZONE = 'Asia/Tokyo'
+TIME_ZONE = 'Asia/Karachi'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 
 #############################################################
 # SRC: https://devcenter.heroku.com/articles/django-assets
