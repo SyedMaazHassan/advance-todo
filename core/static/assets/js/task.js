@@ -257,61 +257,62 @@ if (my_data.length) {
 
 
   
-    $("#sub-task-submit").on("click", function () {
-        let new_sub_task = $("#sub-task-text").val();
-        if (new_sub_task) {
+    // $("#sub-task-submit").on("click", function () {
+    //     let new_sub_task = $("#sub-task-text").val();
+    //     if (new_sub_task) {
                 
-            $.ajax({
-                url: CREATE_CHILD_TASK,
-                type: "GET",
-                data: {
-                    my_parent_task: my_parent_selected.id,
-                    child_task_text: new_sub_task
-                },
-                success: (response)=>{
+    //         $.ajax({
+    //             url: CREATE_CHILD_TASK,
+    //             type: "GET",
+    //             data: {
+    //                 my_parent_task: my_parent_selected.id,
+    //                 child_task_text: new_sub_task
+    //             },
+    //             success: (response)=>{
 
-                    if (response.status) {
+    //                 if (response.status) {
 
-                        var parent_node = $trees[my_parent_selected.general_status].tree('getNodeById', my_parent_selected.id);
+    //                     var parent_node = $trees[my_parent_selected.general_status].tree('getNodeById', my_parent_selected.id);
                         
-                        $trees[my_parent_selected.general_status].tree(
-                            'appendNode',
-                            response.data,
-                            parent_node
-                        );
-                        $trees[my_parent_selected.general_status].tree('openNode', parent_node, false);
+    //                     $trees[my_parent_selected.general_status].tree(
+    //                         'appendNode',
+    //                         response.data,
+    //                         parent_node
+    //                     );
+    //                     $trees[my_parent_selected.general_status].tree('openNode', parent_node, false);
 
-                        reset_child_section();
+    //                     reset_child_section();
                     
-                    }else{
-                        alert(response.message);
-                    }
-                }
-            });
+    //                 }else{
+    //                     alert(response.message);
+    //                 }
+    //             }
+    //         });
             
-        }
-    })
+    //     }
+    // })
 
 
-    setInterval(() => {
-        $.ajax({
-            url: UPDATE_PRIORITY,
-            type: "GET",
-            data: {
-                'today':$trees["TODAY"].tree('toJson'),
-                'tomorrow':$trees["TOMORROW"].tree('toJson'),
-                'week':$trees["THIS WEEK"].tree('toJson'),
-                'later':$trees["LATER"].tree('toJson')
-            },
-            success: (response)=>{
-                if (response.status) {
-                    console.log(response.message);
-                }else{
-                    alert(response.message)
-                }
-            }
-        });
-    }, 4000);
+    // setInterval(() => {
+    //     $.ajax({
+    //         url: UPDATE_PRIORITY,
+    //         type: "GET",
+    //         data: {
+    //             'my_tree': $my_tree.tree('toJson'),
+    //             'today':$trees["TODAY"].tree('toJson'),
+    //             'tomorrow':$trees["TOMORROW"].tree('toJson'),
+    //             'week':$trees["THIS WEEK"].tree('toJson'),
+    //             'later':$trees["LATER"].tree('toJson')
+    //         },
+    //         success: (response)=>{
+    //             if (response.status) {
+    //                 console.log(response.message);
+    //             }else{
+    //                 alert(response.message)
+    //             }
+    //         }
+    //     });
+    // }, 4000);
 
 
     

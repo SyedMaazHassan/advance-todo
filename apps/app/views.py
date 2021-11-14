@@ -36,78 +36,54 @@ def create_task(request):
     return redirect("/")
 
 
-def set_priority_index(task_array):
+def set_priority(task_array):
+    day_dict = {
+        'TODAY': 'today',
+        'TOMORROW': 'tomorrow',
+        'THIS WEEK': 'week',
+        'LATER': 'later',
+    }
+
+    for task_index in range(len(task_array)):
+        if "children" in task_array[task_index]:
+            main_array = task_array[task_index]["children"]
+            due_date = day_dict[task_array[task_index]["name"]]
+            set_priority_index(due_date, main_array)
+        
+
+def set_priority_index(general_status, task_array):
     for task_index in range(len(task_array)):
         priority_index = task_index + 1
         task_id = task_array[task_index]["id"]
 
         task_object = get_object_or_404(Task, id=task_id)
         task_object.priority_index = priority_index
+        task_object.general_status = general_status
         task_object.save()
 
         if task_object.is_parent and 'children' in task_array[task_index]:
             all_chilren = task_array[task_index]["children"]
-            set_priority_index(all_chilren)
+            set_priority_index(general_status, all_chilren)
 
 
 def update_priority(request):
-    output = {'status': True, 'message': 'Login required!'}
+    output = {'status': True, 'message': 'Success!'}
     if request.user.is_authenticated:
         if request.method == "GET" and request.is_ajax():
-            today = request.GET.get('today')
-            tomorrow = request.GET.get('tomorrow')
-            week = request.GET.get('week')
-            later = request.GET.get('later')
-
-            today = json.loads(today)
-            tomorrow = json.loads(tomorrow)
-            week = json.loads(week)
-            later = json.loads(later)
-
-    
+            data = request.GET.get('data') 
+            data = json.loads(data)
 
             try:
-                set_priority_index(today)
-                set_priority_index(tomorrow)
-                set_priority_index(week)
-                set_priority_index(later)
+                set_priority(data)
                 
             except Exception as e:
                 output['message'] = str(e)
                 output['status'] = False
-
-
-            # print(task_index)
-            print(output)
-            # print(today)
-            # print(tomorrow)
-            # print(week)
-            # print(later)
-
-
-            # try:
-            #     parent_task = get_object_or_404(Task, id=my_parent_task)
-        
-            #     new_child_task = Task(
-            #         text = child_task_text,
-            #         is_parent = False,
-            #         status = parent_task.status,
-            #         general_status = parent_task.general_status,
-            #         created_by = request.user,
-            #     )
-
-            #     new_child_task.save()
-            #     parent_task.child_task.add(new_child_task)
-
-            #     output['data'] = new_child_task.get_json()
-            #     output['message'] = "Success"
-            #     output['status'] = True
-
-            # except Exception as e:
-            #     output['message'] = str(e)
-
+    else:
+        output['message'] = "Login required!"
 
     return JsonResponse(output)   
+
 
 
 def bubbleSort(arr):
@@ -238,7 +214,41 @@ def index(request):
     LATER = create_json_list(later)
 
 
-    new_version = []
+    # NEW TREE
+    my_tree = [
+        {
+            'id': 1,
+            'name': 'TODAY',
+            'is_root': True,
+            'children': TODAY
+        },
+        {
+            'id': 2,
+            'name': 'TOMORROW',
+            'is_root': True,
+            'children': TOMORROW
+        },
+        {
+            'id': 3,
+            'name': 'THIS WEEK',
+            'is_root': True,
+            'children': WEEK
+        },
+        {
+            'id': 1,
+            'name': 'LATER',
+            'is_root': True,
+            'children': LATER
+        }
+    ]
+
+
+    new_version = [
+        
+        
+    ]
+
+
     if task_exists:
         new_version = [
             ['TODAY', TODAY],
@@ -257,9 +267,6 @@ def index(request):
 
         #         new_version[group_index][1][task_index] = task.get_json()
 
-        print("===============")
-        print(new_version)
-        print("===============")
 
     new_version = json.dumps(new_version)
 
@@ -269,7 +276,8 @@ def index(request):
         'task_exists': task_exists,
         'completion_rate': completion_rate,
         'completed_tasks': all_task_done_objects,
-        'new_version': new_version
+        'new_version': new_version,
+        'my_tree': json.dumps(my_tree),
     }
 
     return render(request, 'index.html', context)

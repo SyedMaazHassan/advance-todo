@@ -172,7 +172,7 @@ ul.jqtree-tree li.jqtree-selected > .jqtree-element,
 
                                             </div>
 
-                                            <div class="row mt-5 pt-3" id="no-task-warning" style="display: none; height: max-content;">
+                                            <div class="row mt-5 mb-5 pb-5 pt-3" id="no-task-warning" style="display: none; height: max-content;">
                                                 <div class="col-sm-12 d-flex align-items-center justify-content-center">
                                                     <div class="alert alert-warning border mb-0" style="border-radius: 10px;" role="alert">
                                                         No task due right now!
@@ -180,43 +180,15 @@ ul.jqtree-tree li.jqtree-selected > .jqtree-element,
                                                 </div>
                                             </div>
                                         
-                                            <div class="mb-4" id="today-container">
-                                                <h4><b>TODAY</b></h4>
-                                                
-                                                <div class="">
-                                                    <div id="tree-today"></div>
-                                                    
-                                                </div>
-                                            </div>
 
+                                            <div class="mb-4">
+                                                <div id="my-new-tree">
 
-                                            <div class="mb-4" id="tomorrow-container">
-                                                <h4><b>TOMORROW</b></h4>
-                                                
-                                                <div class="">
-                                                    <div id="tree-tomorrow"></div>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="mb-4" id="week-container">
-                                                <h4><b>THIS WEEK</b></h4>
-                                                
-                                                <div class="">
-                                                    <div id="tree-week"></div>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="mb-4" id="later-container">
-                                                <h4><b>LATER</b></h4>
-                                                
-                                                <div class="">
-                                                    <div id="tree-later"></div>
                                                 </div>
                                             </div>
                                          
                                         </div>
+
 
 
 
@@ -330,11 +302,261 @@ ul.jqtree-tree li.jqtree-selected > .jqtree-element,
     var TOGGLE_TASK_URL = "{% url 'toggle-task' %}";
     var CREATE_CHILD_TASK = "{% url 'create-child-task' %}";
     var UPDATE_PRIORITY = "{% url 'update-priority' %}";
+    var my_tree_data = {{ my_tree | safe }};
+
  
 </script>
 
 <script src="{% static 'assets/js/task.js' %}"></script>
 
+
+<script>
+
+    var $my_tree = $("#my-new-tree");
+    $my_tree.tree({
+        data: my_tree_data,
+        dragAndDrop: true,
+        autoOpen: true,
+        closedIcon: $('<i class="material-icons">chevron_right</i>'),
+        openedIcon: $('<i class="material-icons">expand_more</i>'),
+
+
+        onCreateLi: function(node, $li, is_selected) {
+    
+            // Add 'icon' span before title
+            $li.find(".jqtree-element .jqtree-title").attr("id", `title-${node.id}`);
+
+            
+            $li.find('.jqtree-element .jqtree-title').css({
+                "width": "80%",
+            });
+
+            $li.find('.jqtree-element .jqtree-title').css("width", "86%")
+
+            if (node.is_root) {
+                $li.find('.jqtree-element .jqtree-title').css({
+                    "font-weight": "bold",
+                    "font-size": "20px",
+                });
+            }
+
+
+            if (node.status == "DONE") {
+                $li.find('.jqtree-element .jqtree-title').css("text-decoration", "line-through");
+
+                $li.find('.jqtree-element').prepend(
+                    `<div class="text-right" style="width:4%" class="edit">
+                        <i class="material-icons done-icon text-success" data-general-status="${node.general_status}" data-task-id="${node.id}">check_box</i>
+                    </div>`
+                );
+                $li.find('.jqtree-element').append(
+                    `<div class="text-right" style="width:10%" class="edit">
+                        <span class="task-badge DONE"  data-general-status="${node.general_status}" id="status_22">DONE</span>
+                    </div>`
+                );
+            }else{
+                if (!(node.is_root)) {
+                    $li.find('.jqtree-element').prepend(
+                        `<div class="text-right" style="width:4%" class="edit">
+                            <i class="material-icons done-icon"  data-general-status="${node.general_status}" data-task-id="${node.id}">check_box_outline_blank</i>
+                        </div>`
+                    );
+
+                    if (node.is_parent) {
+                        $li.find('.jqtree-element').append(
+                            `
+                            <i 
+                                data-task-id="${node.id}"
+                                style="height: fit-content;"
+                                data-general-status="${node.general_status}" 
+                                class="material-icons mk-pointer bg-secondary text-white p-0 mr-2 radius-100 subtask-add">add</i>
+                            `
+                        );                            
+                    }
+
+                    $li.find('.jqtree-element').append(
+                        `<div class="text-right" style="width:10%" class="edit">
+                            <span class="task-badge TODO"  data-general-status="${node.general_status}" id="mystatus_${node.id}">TODO</span>
+                        </div>`
+                    );   
+                }
+            }
+
+        
+        },
+
+
+
+        onCanMoveTo: function(moved_node, target_node, position) {
+            console.log(position);
+
+            if (moved_node.is_root) {
+                return false;
+            }else{
+                if (moved_node.is_parent && position == "inside" && target_node.is_root) {
+                    return true;
+                }else if(moved_node.parent.name == target_node.parent.name && position != "inside"){
+                    return true
+                }else{
+                    return false;
+                }
+
+
+
+
+                // if (moved_node.is_parent) {
+                //     if (position != "inside" && target_node.is_parent == true) {
+                //         return true;
+                //     }
+                //     return false;
+                // }
+
+
+                if (position == "inside") {
+                    if (target_node.parent.name) {
+                        return false;
+                    } else {
+                        if(target_node == moved_node.parent || target_node.parent == moved_node.parent){
+                            return true
+                        }else{
+                            return false
+                        }
+                    }
+
+                }else if (position == "after") {
+                    if (target_node.parent.name) {
+                        if (target_node.parent == moved_node.parent) {
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    }else{
+                        return false;
+                    }
+                }
+
+            }
+
+            
+        }
+    
+    
+    
+    });
+
+
+    $my_tree.on('click', '.subtask-add', function (e) {
+        let task_id = $(e.target).data('task-id');
+        let general_status = $(e.target).data('general-status');
+
+        // Get the node from the tree
+        var node = $my_tree.tree('getNodeById', task_id);
+
+        if (node) {
+            my_parent_selected = node;
+            $("#sub-task-text").val("");
+            $("#general-status-text").text(node.general_status);
+            $("#short-text").text(node.short_text);
+            $("#sub-task-section").show();
+        }
+
+    });
+
+    $my_tree.on( 'click', '.done-icon', function(e) {
+        // Get the id from the 'node-id' data property
+
+        let task_id = $(e.target).data('task-id');
+        let general_status = $(e.target).data('general-status');
+
+        // Get the node from the tree
+        var node = $my_tree.tree('getNodeById', task_id);
+
+        if (node) {
+            // Display the node name
+            $.ajax({
+                url: TOGGLE_TASK_URL,
+                type: "GET",
+                data: {
+                    task_id: task_id
+                },
+                success: (response)=>{
+                    if (response.status) {
+                        $(e.target).text("check_box");
+                        $(e.target).addClass("text-success");
+                        $(`#title-${task_id}`).css("text-decoration", "line-through");
+                        $(`#mystatus_${task_id}`).attr("class", "task-badge DONE");
+                        $(`#mystatus_${task_id}`).text("DONE");
+                        
+
+                        if (node.is_parent) {
+                            setTimeout(() => {
+                                $my_tree.tree('removeNode', node);
+                            }, 1000);
+                        }
+                    }else{
+                        alert(response.message);
+                    }
+                }
+            });
+        }
+    });
+
+ 
+    $("#sub-task-submit").on("click", function () {
+        let new_sub_task = $("#sub-task-text").val();
+        if (new_sub_task) {
+                
+            $.ajax({
+                url: CREATE_CHILD_TASK,
+                type: "GET",
+                data: {
+                    my_parent_task: my_parent_selected.id,
+                    child_task_text: new_sub_task
+                },
+                success: (response)=>{
+
+                    if (response.status) {
+
+                        var parent_node = $my_tree.tree('getNodeById', my_parent_selected.id);
+                        
+                        $my_tree.tree(
+                            'appendNode',
+                            response.data,
+                            parent_node
+                        );
+                        $my_tree.tree('openNode', parent_node, false);
+
+                        reset_child_section();
+                    
+                    }else{
+                        alert(response.message);
+                    }
+                }
+            });
+            
+        }
+    });
+
+
+    setInterval(() => {
+        $.ajax({
+            url: UPDATE_PRIORITY,
+            type: "GET",
+            data: {
+                'data': $my_tree.tree('toJson'),
+            },
+            success: (response)=>{
+                if (response.status) {
+                    console.log(response.message);
+                }else{
+                    alert(response.message)
+                }
+            }
+        });
+    }, 4000);
+
+
+</script>
 
 
 {% endblock javascripts %}
